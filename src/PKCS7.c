@@ -6,6 +6,8 @@
 
 PKCS7_Padding* addPadding(const void* const data, const uint64_t dataLength, const uint8_t BLOCK_SIZE)
 {
+    uint8_t paddingBytesAmount = 0;
+
     if (0 == BLOCK_SIZE)
     {
         puts("ERROR: block size value must be 0 < BLOCK_SIZE < 256");
@@ -19,7 +21,9 @@ PKCS7_Padding* addPadding(const void* const data, const uint64_t dataLength, con
         exit(-1);
     }
 
-    uint8_t paddingBytesAmount           = BLOCK_SIZE - (dataLength % BLOCK_SIZE);  /* number of bytes to be appended */
+    if (dataLength % BLOCK_SIZE)    /* Add padding only if necessary */
+        paddingBytesAmount = BLOCK_SIZE - (dataLength % BLOCK_SIZE); /* number of bytes to be appended */
+
     paddingResult->valueOfByteForPadding = paddingBytesAmount;                      /* according to the PKCS7 */
     paddingResult->dataLengthWithPadding = dataLength + paddingBytesAmount;         /* size of the final result */
     
